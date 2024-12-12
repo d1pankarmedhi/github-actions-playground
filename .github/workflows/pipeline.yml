@@ -4,7 +4,7 @@ on:
   push:
     branch:
       - develop
-      - release
+      - release/*
 
 jobs:
   build-deploy:
