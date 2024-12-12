@@ -2,7 +2,7 @@ name: CI pipeline
 
 on: 
   push:
-    branch:
+    branches:
       - develop
       - release/*
 
@@ -24,7 +24,7 @@ jobs:
         echo "dev application running..."
 
   build-release:
-    if: github.ref == 'refs/heads/release'
+    if: startsWith(github.ref, 'refs/heads/release/')
     runs-on: ubuntu-latest
 
     steps:
