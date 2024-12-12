@@ -1,0 +1,45 @@
+name: Manual trigger CI pipeline
+
+on: 
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Enter branch"
+        required: false
+        default: develop
+    # branches:
+    #   - develop
+    #   - releases/*
+
+jobs:
+  build-deploy:
+    # if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install dependencies for develop
+      run: |
+        echo "Installing dev dependencies"
+
+    - name: Run dev application
+      run: |
+        echo "dev application running..."
+
+  # build-release:
+  #   if: startsWith(github.ref, 'refs/heads/releases/')
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v2
+
+  #   - name: Install dependencies for release
+  #     run: |
+  #       echo "Installing release dependencies..."
+
+  #   - name: Run release application
+  #     run: |
+  #       echo "release application running..."
