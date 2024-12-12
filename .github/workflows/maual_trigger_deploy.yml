@@ -1,45 +1,23 @@
-name: Manual trigger CI pipeline
+name: Workflow Dispatch
 
-on: 
+on:
   workflow_dispatch:
     inputs:
-      branch:
-        description: "Enter branch"
-        required: false
-        default: develop
-    # branches:
-    #   - develop
-    #   - releases/*
+      branch_name:
+        description: 'Branch name to trigger the workflow'
+        type: string
+        default: 'main'
 
 jobs:
-  build-deploy:
-    # if: github.ref == 'refs/heads/develop'
+  build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Install dependencies for develop
-      run: |
-        echo "Installing dev dependencies"
-
-    - name: Run dev application
-      run: |
-        echo "dev application running..."
-
-  # build-release:
-  #   if: startsWith(github.ref, 'refs/heads/releases/')
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #   - name: Checkout code
-  #     uses: actions/checkout@v2
-
-  #   - name: Install dependencies for release
-  #     run: |
-  #       echo "Installing release dependencies..."
-
-  #   - name: Run release application
-  #     run: |
-  #       echo "release application running..."
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        ref: ${{ github.event.inputs.branch_name }}
+    - run: |
+        echo "The workflow was triggered on branch: ${{ github.event.inputs.branch_name }}"
+    - run: |
+        git checkout ${{ github.event.inputs.branch_name }}
+        # Your build commands here
