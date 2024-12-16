@@ -29,27 +29,32 @@ jobs:
         with:
           ref: ${{ github.event.inputs.branch }}
 
-      - name: Determine Environment
+      - name: Set Environment Variable
         run: |
           if [ "${{ github.event.inputs.environment }}" == "Develop" ]; then
-            echo "ENVIRONMENT=Development" >> $GITHUB_ENV
+            ENVIRONMENT=Development
           elif [ "${{ github.event.inputs.environment }}" == "Release" ]; then
-            echo "ENVIRONMENT=Release" >> $GITHUB_ENV
+            ENVIRONMENT=UAT
           fi
+          echo "ENVIRONMENT=$ENVIRONMENT" >> $GITHUB_ENV
 
-      - name: Validate Release Branch (for Release environment only)
-        if: ${{ github.event.inputs.environment == 'Release' }}
+      - name: Print Environment
         run: |
-          if [[ ! "${{ github.event.inputs.branch }}" =~ ^releases/ ]]; then
-            echo "Error: Release deployments must use a branch starting with 'releases/'." >&2
-            exit 1
-          fi
-
-      - name: Deploy Application
-        run: |
-          echo "Deploying branch ${{ github.event.inputs.branch }} to $ENVIRONMENT environment"
-          # Add your deployment commands here
-
+          echo "The ENVIRONMENT is set to: $ENVIRONMENT"
+          
+          
       - name: Confirm Deployment
         run: |
           echo "Deployment to $ENVIRONMENT environment completed."
+      
+      - name: Install dependencies
+        run: |
+          echo "Installing dependencies for $ENVIRONMENT environment..."
+
+      - name: Deploy Application
+        run: |
+          echo "Deploying branch ${{ github.event.inputs.branch }} to $ENVIRONMENT environment..."
+
+      - name: Run application
+        run: |
+          echo "$ENVIRONMENT application is running..."
