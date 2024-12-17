@@ -13,12 +13,13 @@ on:
           - Develop
           - Release
 
+
+env:
+  ENVIRONMENT: ''
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
-    env:
-      ENVIRONMENT: ''
 
     steps:
       - name: Set up Git repository
@@ -29,29 +30,29 @@ jobs:
       - name: Set Environment Variable
         run: |
           if [ "${{ github.event.inputs.environment }}" == "Develop" ]; then
-            ENVIRONMENT=Development
+            env.ENVIRONMENT=Development
           elif [ "${{ github.event.inputs.environment }}" == "Release" ]; then
-            ENVIRONMENT=UAT
+            env.ENVIRONMENT=UAT
           fi
-          echo "ENVIRONMENT=$ENVIRONMENT" >> $GITHUB_ENV
+          echo "ENVIRONMENT=${{env.ENVIRONMENT}}" >> $GITHUB_ENV
 
       - name: Print Environment
         run: |
-          echo "The ENVIRONMENT is set to: $ENVIRONMENT"
+          echo "The ENVIRONMENT is set to: ${{env.ENVIRONMENT}}"
           
           
       - name: Confirm Deployment
         run: |
-          echo "Deployment to $ENVIRONMENT environment completed."
+          echo "Deployment to ${{env.ENVIRONMENT}} environment completed."
       
       - name: Install dependencies
         run: |
-          echo "Installing dependencies for $ENVIRONMENT environment..."
+          echo "Installing dependencies for ${{env.ENVIRONMENT}} environment..."
 
       - name: Deploy Application
         run: |
-          echo "Deploying branch ${{ github.event.inputs.branch }} to $ENVIRONMENT environment..."
+          echo "Deploying branch ${{ github.event.inputs.branch }} to ${{env.ENVIRONMENT}} environment..."
 
       - name: Run application
         run: |
-          echo "$ENVIRONMENT application is running..."
+          echo "${{env.ENVIRONMENT}} application is running..."
