@@ -11,6 +11,14 @@ on:
         options:
           - Develop
           - Release
+      channel:
+        description: 'Select the channel'
+        required: true
+        default: 'Default'
+        type: choice
+        options:
+          - Default
+          - Release
 
 jobs:
   deploy:
@@ -22,40 +30,48 @@ jobs:
         with:
           ref: ${{ github.event.inputs.branch }}
 
-      - name: Set Environment and Channel Variables
+      # Set ENVIRONMENT based on input
+      - name: Set ENVIRONMENT Variable
         shell: pwsh
         run: |
-          $inputEnvironment = "${{ github.event.inputs.environment }}"
-          if ($inputEnvironment -eq "Develop") {
+          if ("${{ github.event.inputs.environment }}" -eq "Develop") {
             echo "ENVIRONMENT=Development" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
-            echo "CHANNEL=Default" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
-          } elseif ($inputEnvironment -eq "Release") {
+          } elseif ("${{ github.event.inputs.environment }}" -eq "Release") {
             echo "ENVIRONMENT=UAT" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+          }
+
+      # Set CHANNEL based on input
+      - name: Set CHANNEL Variable
+        shell: pwsh
+        run: |
+          if ("${{ github.event.inputs.channel }}" -eq "Default") {
+            echo "CHANNEL=Default" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+          } elseif ("${{ github.event.inputs.channel }}" -eq "Release") {
             echo "CHANNEL=Release" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
           }
 
-      - name: Print Environment and Channel
+      - name: Print ENVIRONMENT and CHANNEL
         shell: pwsh
         run: |
-          echo "The ENVIRONMENT is set to: $env:ENVIRONMENT"
-          echo "The CHANNEL is set to: $env:CHANNEL"
+          Write-Output "The ENVIRONMENT is set to: $env:ENVIRONMENT"
+          Write-Output "The CHANNEL is set to: $env:CHANNEL"
 
       - name: Confirm Deployment
         shell: pwsh
         run: |
-          echo "Deployment to $env:ENVIRONMENT environment on channel $env:CHANNEL completed."
+          Write-Output "Deployment to $env:ENVIRONMENT environment on channel $env:CHANNEL completed."
 
       - name: Install dependencies
         shell: pwsh
         run: |
-          echo "Installing dependencies for $env:ENVIRONMENT environment on channel $env:CHANNEL..."
+          Write-Output "Installing dependencies for $env:ENVIRONMENT environment on channel $env:CHANNEL..."
 
       - name: Deploy Application
         shell: pwsh
         run: |
-          echo "Deploying branch ${{ github.event.inputs.branch }} to $env:ENVIRONMENT environment on channel $env:CHANNEL..."
+          Write-Output "Deploying branch ${{ github.event.inputs.branch }} to $env:ENVIRONMENT environment on channel $env:CHANNEL..."
 
       - name: Run application
         shell: pwsh
         run: |
-          echo "$env:ENVIRONMENT application is running on channel $env:CHANNEL..."
+          Write-Output "$env:ENVIRONMENT application is running on channel $env:CHANNEL..."
