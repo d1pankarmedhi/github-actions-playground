@@ -3,7 +3,6 @@ name: Deploy Workflow
 on:
   workflow_dispatch:
     inputs:
-    
       environment:
         description: 'Select the environment'
         required: true
@@ -12,7 +11,6 @@ on:
         options:
           - Develop
           - Release
-
 
 env:
   ENVIRONMENT: ''
@@ -30,29 +28,27 @@ jobs:
       - name: Set Environment Variable
         run: |
           if [ "${{ github.event.inputs.environment }}" == "Develop" ]; then
-            env.ENVIRONMENT=Development
+            echo "ENVIRONMENT=Development" >> $GITHUB_ENV
           elif [ "${{ github.event.inputs.environment }}" == "Release" ]; then
-            env.ENVIRONMENT=UAT
+            echo "ENVIRONMENT=UAT" >> $GITHUB_ENV
           fi
-          echo "ENVIRONMENT=${{env.ENVIRONMENT}}" >> $GITHUB_ENV
 
       - name: Print Environment
         run: |
-          echo "The ENVIRONMENT is set to: ${{env.ENVIRONMENT}}"
-          
-          
+          echo "The ENVIRONMENT is set to: ${{ env.ENVIRONMENT }}"
+
       - name: Confirm Deployment
         run: |
-          echo "Deployment to ${{env.ENVIRONMENT}} environment completed."
-      
+          echo "Deployment to ${{ env.ENVIRONMENT }} environment completed."
+
       - name: Install dependencies
         run: |
-          echo "Installing dependencies for ${{env.ENVIRONMENT}} environment..."
+          echo "Installing dependencies for ${{ env.ENVIRONMENT }} environment..."
 
       - name: Deploy Application
         run: |
-          echo "Deploying branch ${{ github.event.inputs.branch }} to ${{env.ENVIRONMENT}} environment..."
+          echo "Deploying branch ${{ github.event.inputs.branch }} to ${{ env.ENVIRONMENT }} environment..."
 
       - name: Run application
         run: |
-          echo "${{env.ENVIRONMENT}} application is running..."
+          echo "${{ env.ENVIRONMENT }} application is running..."
