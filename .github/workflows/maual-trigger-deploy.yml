@@ -12,6 +12,9 @@ on:
           - Develop
           - Release
 
+env:
+  ENVIRONMENT: ""
+
 jobs:
   deploy:
     runs-on: windows-latest
@@ -31,23 +34,23 @@ jobs:
 
       - name: Print Environment
         run: |
-          Write-Host "The ENVIRONMENT is set to: $ENV:ENVIRONMENT"
+          Write-Host "The ENVIRONMENT is set to: ${{env.ENVIRONMENT}}"
 
       - name: Confirm Deployment
         run: |
-          Write-Host "Deployment to $ENV:ENVIRONMENT environment completed."
+          Write-Host "Deployment to ${{env.ENVIRONMENT}} environment completed."
 
       - name: Install dependencies
         run: |
           # Replace with your Windows-specific dependency installation commands
-          Write-Host "Installing dependencies for $ENV:ENVIRONMENT environment..."
+          Write-Host "Installing dependencies for ${{env.ENVIRONMENT}} environment..."
 
       - name: Deploy Application
         run: |
           # Replace with your Windows-specific deployment commands
-          Write-Host "Deploying branch ${{ github.event.inputs.branch }} to $ENV:ENVIRONMENT environment..."
+          Write-Host "Deploying branch ${{ github.event.inputs.branch }} to ${{env.ENVIRONMENT}} environment..."
 
       - name: Run application
         run: |
           # Replace with your Windows-specific application startup commands
-          Write-Host "$ENV:ENVIRONMENT application is running..."
+          Write-Host "${{env.ENVIRONMENT}} application is running..."
