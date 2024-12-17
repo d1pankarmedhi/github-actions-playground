@@ -25,20 +25,17 @@ jobs:
         with:
           ref: ${{ github.event.inputs.branch }}
 
-      - name: Set Environment Variable
+      - name: Set Environment and Channel Variables
         shell: pwsh
         run: |
           $inputEnvironment = "${{ github.event.inputs.environment }}"
           if ($inputEnvironment -eq "Develop") {
-            $env:ENVIRONMENT = "Development"
-            $env:CHANNEL = "Default"
+            echo "ENVIRONMENT=Development" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+            echo "CHANNEL=Default" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
           } elseif ($inputEnvironment -eq "Release") {
-            $env:ENVIRONMENT = "UAT"
-            $env:CHANNEL = "Release"
+            echo "ENVIRONMENT=UAT" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+            echo "CHANNEL=Release" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
           }
-          
-          echo "ENVIRONMENT=$env:ENVIRONMENT" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
-          echo "CHANNEL=$env:CHANNEL" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
 
       - name: Print Environment and Channel
         shell: pwsh
