@@ -12,43 +12,42 @@ on:
           - Develop
           - Release
 
-env:
-  ENVIRONMENT: ''
-
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
-      - name: Set up Git repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.inputs.branch }}
 
       - name: Set Environment Variable
         run: |
-          if [ "${{ github.event.inputs.environment }}" == "Develop" ]; then
-            echo "ENVIRONMENT=Development" >> $GITHUB_ENV
-          elif [ "${{ github.event.inputs.environment }}" == "Release" ]; then
-            echo "ENVIRONMENT=UAT" >> $GITHUB_ENV
-          fi
+          if (${github.event.inputs.environment} -eq "Develop") {
+            Write-Host "##vso[task.setvariable variable=ENVIRONMENT]Development"
+          } elseif (${github.event.inputs.environment} -eq "Release") {
+            Write-Host "##vso[task.setvariable variable=ENVIRONMENT]UAT"
+          }
 
       - name: Print Environment
         run: |
-          echo "The ENVIRONMENT is set to: ${{ env.ENVIRONMENT }}"
+          Write-Host "The ENVIRONMENT is set to: $ENV:ENVIRONMENT"
 
       - name: Confirm Deployment
         run: |
-          echo "Deployment to ${{ env.ENVIRONMENT }} environment completed."
+          Write-Host "Deployment to $ENV:ENVIRONMENT environment completed."
 
       - name: Install dependencies
         run: |
-          echo "Installing dependencies for ${{ env.ENVIRONMENT }} environment..."
+          # Replace with your Windows-specific dependency installation commands
+          Write-Host "Installing dependencies for $ENV:ENVIRONMENT environment..."
 
       - name: Deploy Application
         run: |
-          echo "Deploying branch ${{ github.event.inputs.branch }} to ${{ env.ENVIRONMENT }} environment..."
+          # Replace with your Windows-specific deployment commands
+          Write-Host "Deploying branch ${{ github.event.inputs.branch }} to $ENV:ENVIRONMENT environment..."
 
       - name: Run application
         run: |
-          echo "${{ env.ENVIRONMENT }} application is running..."
+          # Replace with your Windows-specific application startup commands
+          Write-Host "$ENV:ENVIRONMENT application is running..."
