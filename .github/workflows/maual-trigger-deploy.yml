@@ -36,7 +36,7 @@ jobs:
             $env:ENVIRONMENT = "UAT"
             $env:CHANNEL = "Release"
           }
-          fi
+          
           echo "ENVIRONMENT=$env:ENVIRONMENT" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
           echo "CHANNEL=$env:CHANNEL" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
 
