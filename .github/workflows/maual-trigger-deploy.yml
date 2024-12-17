@@ -1,4 +1,4 @@
-name: Deploy Workflow
+name: Deploy Workflow (Windows)
 
 on:
   workflow_dispatch:
@@ -12,42 +12,44 @@ on:
           - Develop
           - Release
 
+env:
+  ENVIRONMENT: ''
+
 jobs:
   deploy:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Set up Git repository
+        uses: actions/checkout@v3
         with:
           ref: ${{ github.event.inputs.branch }}
 
       - name: Set Environment Variable
         run: |
-          if (${github.event.inputs.environment} -eq "Develop") {
-            Write-Host "::set-env name=ENVIRONMENT::Development"
-          } elseif (${github.event.inputs.environment} -eq "Release") {
-            Write-Host "::set-env name=ENVIRONMENT::UAT"
-          }
+          if "%{{ github.event.inputs.environment }}" == "Develop" (
+            set ENVIRONMENT=Development
+          ) else if "%{{ github.event.inputs.environment }}" == "Release" (
+            set ENVIRONMENT=UAT
+          )
+          echo ENVIRONMENT=%ENVIRONMENT% >> $GITHUB_ENV
 
       - name: Print Environment
         run: |
-          Write-Host "The ENVIRONMENT is set to: $ENV:ENVIRONMENT"
-
+          echo The ENVIRONMENT is set to: %ENVIRONMENT%
+          
       - name: Confirm Deployment
         run: |
-          Write-Host "Deployment to $ENV:ENVIRONMENT environment completed."
-
+          echo Deployment to %ENVIRONMENT% environment completed.
+      
       - name: Install dependencies
         run: |
-          # Replace with your Windows-specific dependency installation commands
-          Write-Host "Installing dependencies for $ENV:ENVIRONMENT environment..."
+          echo Installing dependencies for %ENVIRONMENT% environment...
 
       - name: Deploy Application
         run: |
-          # Replace with your Windows-specific deployment commands
-          Write-Host "Deploying branch ${{ github.event.inputs.branch }} to $ENV:ENVIRONMENT environment..."
+          echo Deploying branch %{{ github.event.inputs.branch }} to %ENVIRONMENT% environment...
 
       - name: Run application
         run: |
-          # Replace with your Windows-specific application startup commands
-          Write-Host "$ENV:ENVIRONMENT application is running..."
+          echo %ENVIRONMENT% application is running...
