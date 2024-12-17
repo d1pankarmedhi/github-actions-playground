@@ -44,7 +44,7 @@ jobs:
       - name: Confirm Deployment
         shell: pwsh
         run: |
-          echo "Deployment to $env:ENVIRONMENT environment completed."
+          echo "Deployment to ${{env.ENVIRONMENT}} environment completed."
 
       - name: Install dependencies
         shell: pwsh
