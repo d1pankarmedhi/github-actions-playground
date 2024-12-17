@@ -26,30 +26,36 @@ jobs:
           ref: ${{ github.event.inputs.branch }}
 
       - name: Set Environment Variable
+        shell: pwsh
         run: |
-          if "%{{ github.event.inputs.environment }}" == "Develop" (
-            set ENVIRONMENT=Development
-          ) else if "%{{ github.event.inputs.environment }}" == "Release" (
-            set ENVIRONMENT=UAT
-          )
-          echo ENVIRONMENT=%ENVIRONMENT% >> $GITHUB_ENV
+          if (${{ github.event.inputs.environment }} -eq "Develop") {
+            $env:ENVIRONMENT = "Development"
+          } elseif (${{ github.event.inputs.environment }} -eq "Release") {
+            $env:ENVIRONMENT = "UAT"
+          }
+          echo "ENVIRONMENT=$env:ENVIRONMENT" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
 
       - name: Print Environment
+        shell: pwsh
         run: |
-          echo The ENVIRONMENT is set to: %ENVIRONMENT%
-          
+          echo "The ENVIRONMENT is set to: $env:ENVIRONMENT"
+
       - name: Confirm Deployment
+        shell: pwsh
         run: |
-          echo Deployment to %ENVIRONMENT% environment completed.
-      
+          echo "Deployment to $env:ENVIRONMENT environment completed."
+
       - name: Install dependencies
+        shell: pwsh
         run: |
-          echo Installing dependencies for %ENVIRONMENT% environment...
+          echo "Installing dependencies for $env:ENVIRONMENT environment..."
 
       - name: Deploy Application
+        shell: pwsh
         run: |
-          echo Deploying branch %{{ github.event.inputs.branch }} to %ENVIRONMENT% environment...
+          echo "Deploying branch ${{ github.event.inputs.branch }} to $env:ENVIRONMENT environment..."
 
       - name: Run application
+        shell: pwsh
         run: |
-          echo %ENVIRONMENT% application is running...
+          echo "$env:ENVIRONMENT application is running..."
