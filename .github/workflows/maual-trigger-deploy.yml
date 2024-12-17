@@ -12,9 +12,6 @@ on:
           - Develop
           - Release
 
-env:
-  ENVIRONMENT: ''
-
 jobs:
   deploy:
     runs-on: windows-latest
@@ -46,19 +43,19 @@ jobs:
       - name: Confirm Deployment
         shell: pwsh
         run: |
-          echo "Deployment to ${{env.ENVIRONMENT}} environment completed."
+          echo "Deployment to $env:ENVIRONMENT environment on channel $env:CHANNEL completed."
 
       - name: Install dependencies
         shell: pwsh
         run: |
-          echo "Installing dependencies for $env:ENVIRONMENT environment..."
+          echo "Installing dependencies for $env:ENVIRONMENT environment on channel $env:CHANNEL..."
 
       - name: Deploy Application
         shell: pwsh
         run: |
-          echo "Deploying branch ${{ github.event.inputs.branch }} to $env:ENVIRONMENT environment..."
+          echo "Deploying branch ${{ github.event.inputs.branch }} to $env:ENVIRONMENT environment on channel $env:CHANNEL..."
 
       - name: Run application
         shell: pwsh
         run: |
-          echo "$env:ENVIRONMENT application is running..."
+          echo "$env:ENVIRONMENT application is running on channel $env:CHANNEL..."
