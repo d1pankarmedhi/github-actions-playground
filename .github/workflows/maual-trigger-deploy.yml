@@ -31,15 +31,20 @@ jobs:
           $inputEnvironment = "${{ github.event.inputs.environment }}"
           if ($inputEnvironment -eq "Develop") {
             $env:ENVIRONMENT = "Development"
+            $env:CHANNEL = "Default"
           } elseif ($inputEnvironment -eq "Release") {
             $env:ENVIRONMENT = "UAT"
+            $env:CHANNEL = "Release"
           }
+          fi
           echo "ENVIRONMENT=$env:ENVIRONMENT" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+          echo "CHANNEL=$env:CHANNEL" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
 
-      - name: Print Environment
+      - name: Print Environment and Channel
         shell: pwsh
         run: |
           echo "The ENVIRONMENT is set to: $env:ENVIRONMENT"
+          echo "The CHANNEL is set to: $env:CHANNEL"
 
       - name: Confirm Deployment
         shell: pwsh
