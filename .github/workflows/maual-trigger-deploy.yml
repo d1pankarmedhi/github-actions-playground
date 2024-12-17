@@ -28,9 +28,10 @@ jobs:
       - name: Set Environment Variable
         shell: pwsh
         run: |
-          if (${{ github.event.inputs.environment }} -eq "Develop") {
+          $inputEnvironment = "${{ github.event.inputs.environment }}"
+          if ($inputEnvironment -eq "Develop") {
             $env:ENVIRONMENT = "Development"
-          } elseif (${{ github.event.inputs.environment }} -eq "Release") {
+          } elseif ($inputEnvironment -eq "Release") {
             $env:ENVIRONMENT = "UAT"
           }
           echo "ENVIRONMENT=$env:ENVIRONMENT" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
