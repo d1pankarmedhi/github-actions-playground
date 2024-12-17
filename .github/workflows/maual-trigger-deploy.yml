@@ -12,9 +12,6 @@ on:
           - Develop
           - Release
 
-env:
-  ENVIRONMENT: ""
-
 jobs:
   deploy:
     runs-on: windows-latest
@@ -27,30 +24,30 @@ jobs:
       - name: Set Environment Variable
         run: |
           if (${github.event.inputs.environment} -eq "Develop") {
-            Write-Host "##vso[task.setvariable variable=ENVIRONMENT]Development"
+            Write-Host "::set-env name=ENVIRONMENT::Development"
           } elseif (${github.event.inputs.environment} -eq "Release") {
-            Write-Host "##vso[task.setvariable variable=ENVIRONMENT]UAT"
+            Write-Host "::set-env name=ENVIRONMENT::UAT"
           }
 
       - name: Print Environment
         run: |
-          Write-Host "The ENVIRONMENT is set to: ${{env.ENVIRONMENT}}"
+          Write-Host "The ENVIRONMENT is set to: $ENV:ENVIRONMENT"
 
       - name: Confirm Deployment
         run: |
-          Write-Host "Deployment to ${{env.ENVIRONMENT}} environment completed."
+          Write-Host "Deployment to $ENV:ENVIRONMENT environment completed."
 
       - name: Install dependencies
         run: |
           # Replace with your Windows-specific dependency installation commands
-          Write-Host "Installing dependencies for ${{env.ENVIRONMENT}} environment..."
+          Write-Host "Installing dependencies for $ENV:ENVIRONMENT environment..."
 
       - name: Deploy Application
         run: |
           # Replace with your Windows-specific deployment commands
-          Write-Host "Deploying branch ${{ github.event.inputs.branch }} to ${{env.ENVIRONMENT}} environment..."
+          Write-Host "Deploying branch ${{ github.event.inputs.branch }} to $ENV:ENVIRONMENT environment..."
 
       - name: Run application
         run: |
           # Replace with your Windows-specific application startup commands
-          Write-Host "${{env.ENVIRONMENT}} application is running..."
+          Write-Host "$ENV:ENVIRONMENT application is running..."
