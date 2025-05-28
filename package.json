@@ -1,0 +1,20 @@
+{
+  "name": "github-actions-playground",
+  "version": "1.0.0",
+  "description": "Testout github-actions scripts and try out strategies for build and deployments.",
+  "homepage": "https://github.com/d1pankarmedhi/github-actions-playground#readme",
+  "bugs": {
+    "url": "https://github.com/d1pankarmedhi/github-actions-playground/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/d1pankarmedhi/github-actions-playground.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

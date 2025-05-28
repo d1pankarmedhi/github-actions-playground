@@ -1,0 +1,50 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: "Release version (e.g., 1.1.4)"
+        required: true
+        type: string
+
+      package_bump:
+        description: "Package version bump (e.g., patch, minor, major)"
+        required: true
+        default: "patch"
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22"
+
+      - name: Configure Git
+        run: |
+          git config --local user.name "GitHub Actions"
+          git config --local user.email "actions@github.com"
+
+      - name: Bump package version
+        run: npm version ${{ github.event.inputs.package_bump }} --no-git-tag-version
+
+      - name: Commit version bump
+        run: |
+          git add package.json package-lock.json
+          git commit -m "Bump package version to ${{ github.event.inputs.release_version }}" [skip ci]
+
+      - name: Create release branch
+        run: |
+          git checkout -b release/release-${{ github.event.inputs.release_version }}
+          git push origin release/release-${{ github.event.inputs.release_version }}

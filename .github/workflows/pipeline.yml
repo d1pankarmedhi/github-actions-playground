@@ -1,40 +1,77 @@
-name: CI pipeline
+name: Deploy Workflow (Windows)
 
-on: 
-  push:
-    branches:
-      - develop
-      - releases/*
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Select the environment"
+        required: true
+        default: "Develop"
+        type: choice
+        options:
+          - Develop
+          - Release
+      channel:
+        description: "Select the channel"
+        required: true
+        default: "Default"
+        type: choice
+        options:
+          - Default
+          - Release
 
 jobs:
-  build-deploy:
-    if: github.ref == 'refs/heads/develop'
-    runs-on: ubuntu-latest
+  deploy:
+    runs-on: windows-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Set up Git repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.branch }}
 
-    - name: Install dependencies for develop
-      run: |
-        echo "Installing dev dependencies"
+      # Set ENVIRONMENT based on input
+      - name: Set ENVIRONMENT Variable
+        shell: pwsh
+        run: |
+          if ("${{ github.event.inputs.environment }}" -eq "Develop") {
+            echo "ENVIRONMENT=Development" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+          } elseif ("${{ github.event.inputs.environment }}" -eq "Release") {
+            echo "ENVIRONMENT=UAT" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+          }
 
-    - name: Run dev application
-      run: |
-        echo "dev application running..."
+      # Set CHANNEL based on input
+      - name: Set CHANNEL Variable
+        shell: pwsh
+        run: |
+          if ("${{ github.event.inputs.channel }}" -eq "Default") {
+            echo "CHANNEL=Default" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+          } elseif ("${{ github.event.inputs.channel }}" -eq "Release") {
+            echo "CHANNEL=Release" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+          }
 
-  build-release:
-    if: startsWith(github.ref, 'refs/heads/releases/')
-    runs-on: ubuntu-latest
+      - name: Print ENVIRONMENT and CHANNEL
+        shell: pwsh
+        run: |
+          Write-Output "The ENVIRONMENT is set to: $env:ENVIRONMENT"
+          Write-Output "The CHANNEL is set to: $env:CHANNEL"
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Confirm Deployment
+        shell: pwsh
+        run: |
+          Write-Output "Deployment to $env:ENVIRONMENT environment on channel $env:CHANNEL completed."
 
-    - name: Install dependencies for release
-      run: |
-        echo "Installing release dependencies..."
+      - name: Install dependencies
+        shell: pwsh
+        run: |
+          Write-Output "Installing dependencies for $env:ENVIRONMENT environment on channel $env:CHANNEL..."
 
-    - name: Run release application
-      run: |
-        echo "release application running..."
+      - name: Deploy Application
+        shell: pwsh
+        run: |
+          Write-Output "Deploying branch ${{ github.event.inputs.branch }} to $env:ENVIRONMENT environment on channel $env:CHANNEL..."
+
+      - name: Run application
+        shell: pwsh
+        run: |
+          Write-Output "$env:ENVIRONMENT application is running on channel $env:CHANNEL..."
