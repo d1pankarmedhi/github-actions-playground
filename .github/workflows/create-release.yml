@@ -44,6 +44,10 @@ jobs:
           git add package.json 
           git commit -m "chore(release): bump version to ${{ steps.version_bump.outputs.new_version }} [skip ci]"
 
+      - name: Set remote using PAT
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/${{ github.repository }}
+
       - name: Create and push release branch
         run: |
           BRANCH_NAME=release/release-${{ steps.version_bump.outputs.new_version }}
