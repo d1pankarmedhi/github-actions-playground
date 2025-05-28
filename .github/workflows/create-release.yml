@@ -3,11 +3,6 @@ name: Create Release
 on:
   workflow_dispatch:
     inputs:
-      release_version:
-        description: "Release version (e.g., 1.1.4)"
-        required: true
-        type: string
-
       package_bump:
         description: "Package version bump (e.g., patch, minor, major)"
         required: true
@@ -25,9 +20,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: develop
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: "22"
 
@@ -37,14 +34,18 @@ jobs:
           git config --local user.email "actions@github.com"
 
       - name: Bump package version
-        run: npm version ${{ github.event.inputs.package_bump }} --no-git-tag-version
+        id: version_bump
+        run: |
+          NEW_VERSION=$(npm version ${{ github.event.inputs.package_bump }} --no-git-tag-version)
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
 
       - name: Commit version bump
         run: |
-          git add package.json package-lock.json
-          git commit -m "Bump package version to ${{ github.event.inputs.release_version }}" [skip ci]
+          git add package.json 
+          git commit -m "chore(release): bump version to ${{ steps.version_bump.outputs.new_version }} [skip ci]"
 
-      - name: Create release branch
+      - name: Create and push release branch
         run: |
-          git checkout -b release/release-${{ github.event.inputs.release_version }}
-          git push origin release/release-${{ github.event.inputs.release_version }}
+          BRANCH_NAME=release/release-${{ steps.version_bump.outputs.new_version }}
+          git checkout -b $BRANCH_NAME
+          git push origin $BRANCH_NAME
