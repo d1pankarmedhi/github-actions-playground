@@ -1,6 +1,6 @@
 {
   "name": "github-actions-playground",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Testout github-actions scripts and try out strategies for build and deployments.",
   "homepage": "https://github.com/d1pankarmedhi/github-actions-playground#readme",
   "bugs": {
